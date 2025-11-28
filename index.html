@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ayu360 - Ayurvedic Digital Assessment Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2c5f2d;
+            --secondary: #97cc04;
+            --accent: #ff6b35;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --gold: #d4af37;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary), #4a6741);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.95;
+            margin-bottom: 5px;
+        }
+
+        .header .tagline {
+            font-size: 0.95em;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 5px solid var(--primary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .card.clinical {
+            border-left-color: #3498db;
+        }
+
+        .card.prakruti {
+            border-left-color: #e74c3c;
+        }
+
+        .card.disease {
+            border-left-color: #f39c12;
+        }
+
+        .card.dhatu {
+            border-left-color: #9b59b6;
+        }
+
+        .card.tools {
+            border-left-color: #1abc9c;
+        }
+
+        .card.resources {
+            border-left-color: #34495e;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-icon {
+            font-size: 2.5em;
+            margin-right: 15px;
+        }
+
+        .card h2 {
+            color: var(--dark);
+            font-size: 1.8em;
+        }
+
+        .card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .sub-items {
+            margin-top: 15px;
+            padding-left: 10px;
+        }
+
+        .sub-item {
+            background: #f8f9fa;
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .sub-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .sub-item.active {
+            background: linear-gradient(90deg, #e3f2fd, #fff);
+            border-left-color: #2196f3;
+        }
+
+        .sub-item strong {
+            color: var(--dark);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .sub-item small {
+            color: #777;
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 15px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .welcome-section h2 {
+            color: var(--primary);
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section p {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .quick-access {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #4a6741);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 95, 45, 0.4);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .btn.accent {
+            background: linear-gradient(135deg, var(--accent), #e55b2b);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .feature-box .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-box h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .feature-box p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--secondary);
+            color: var(--dark);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge.new {
+            background: var(--accent);
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-access {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🕉️ Ayu360</h1>
+        <p class="subtitle">Comprehensive Ayurvedic Digital Assessment Platform</p>
+        <p class="tagline">360° Ayurvedic Health Assessment - Integrating Ancient Wisdom with Modern Technology</p>
+    </div>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome to Ayu360</h2>
+            <p>
+                A comprehensive 360-degree digital platform for Ayurvedic assessment and diagnosis. Our system integrates 
+                traditional Ayurvedic diagnostic principles with modern technology to provide accurate, 
+                standardized assessments for various health conditions. Explore our range of assessment tools, 
+                diagnostic scales, and educational resources designed for healthcare professionals and researchers.
+            </p>
+            <div class="quick-access">
+                <button class="btn" onclick="scrollToSection('clinical')">Start Assessment</button>
+                <button class="btn secondary" onclick="scrollToSection('disease')">Disease Tools</button>
+                <button class="btn accent" onclick="scrollToSection('resources')">Learn More</button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <!-- Clinical Assessment Card -->
+            <div class="card clinical" id="clinical">
+                <div class="card-header">
+                    <div class="card-icon">🩺</div>
+                    <h2>Clinical Assessment</h2>
+                </div>
+                <p>4-Pillar Clinical Assessment Model (4-PCAM) - Complete Ayurvedic diagnostic system developed by Dr. Smitrajsinh Jadeja, Dr. Anirudh Bhatt, Dr. Yogesh Valaki, Dr. Diksha Kanani, guided by Dr. Prakash Kumbar.</p>
+                <div class="sub-items">
+                    <a href="patient-information.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item active">
+                            <strong>📋 Patient Information <span class="badge new">START HERE</span></strong>
+                            <small>Begin complete 4-PCAM assessment</small>
+                        </div>
+                    </a>
+                    <a href="agni-dusti.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item">
+                            <strong>🔥 Pillar 1: Agni Assessment</strong>
+                            <small>Digestive fire evaluation (Vishama, Tikshna, Manda, Sama)</small>
+                        </div>
+                    </a>
+                    <a href="dosha-dusti.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item">
+                            <strong>⚖️ Pillar 2: Dosha Assessment</strong>
+                            <small>Vata, Pitta, Kapha dushti analysis</small>
+                        </div>
+                    </a>
+                    <a href="dhatu-dusti.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item">
+                            <strong>🧬 Pillar 3: Dhatu Assessment</strong>
+                            <small>Seven tissue system evaluation (Kshaya & Vriddhi)</small>
+                        </div>
+                    </a>
+                    <a href="sroto-dusti.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item">
+                            <strong>🌊 Pillar 4: Srotas Assessment</strong>
+                            <small>Complete 15 channel system analysis</small>
+                        </div>
+                    </a>
+                    <a href="final-assessment.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item">
+                            <strong>📊 Final Assessment Report</strong>
+                            <small>Comprehensive results & recommendations</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Disease Assessment Card -->
+            <div class="card disease" id="disease">
+                <div class="card-header">
+                    <div class="card-icon">🔬</div>
+                    <h2>Disease Assessment</h2>
+                </div>
+                <p>Specialized assessment scales for specific conditions with comprehensive evaluation tools.</p>
+                <div class="sub-items">
+                    <a href="gridhrasi.html" target="_blank" style="text-decoration: none; color: inherit;">
+                        <div class="sub-item active">
+                            <strong>Gridhrasi (Sciatica) Scale <span class="badge new">NEW</span></strong>
+                            <small>Complete diagnostic assessment tool</small>
+                        </div>
+                    </a>
+                    <div class="sub-item" onclick="showModal('upcoming')">
+                        <strong>Additional Disease Scales</strong>
+                        <small>Coming soon...</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prakruti Assessment Card -->
+            <div class="card prakruti">
+                <div class="card-header">
+                    <div class="card-icon">👤</div>
+                    <h2>Prakruti Assessment</h2>
+                </div>
+                <p>Determine the constitutional type of individuals based on Ayurvedic principles.</p>
+                <div class="sub-items">
+                    <div class="sub-item" onclick="showModal('prakruti')">
+                        <strong>Constitutional Analysis</strong>
+                        <small>Comprehensive body type assessment</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dhatu Sarta Card -->
+            <div class="card dhatu">
+                <div class="card-header">
+                    <div class="card-icon">💪</div>
+                    <h2>Dhatu Sarta</h2>
+                </div>
+                <p>Assessment of tissue quality and structural excellence in the body.</p>
+                <div class="sub-items">
+                    <div class="sub-item" onclick="showModal('dhatusarta')">
+                        <strong>Tissue Excellence Scale</strong>
+                        <small>Seven dhatu quality assessment</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Examination Tools Card -->
+            <div class="card tools">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <h2>Examination Tools</h2>
+                </div>
+                <p>Classical examination methods for comprehensive patient evaluation.</p>
+                <div class="sub-items">
+                    <div class="sub-item" onclick="showModal('ashtavidha')">
+                        <strong>Ashtavidha Pariksha</strong>
+                        <small>Eight-fold examination</small>
+                    </div>
+                    <div class="sub-item" onclick="showModal('dashavidha')">
+                        <strong>Dashavidha Pariksha</strong>
+                        <small>Ten-fold examination</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resources Card -->
+            <div class="card resources" id="resources">
+                <div class="card-header">
+                    <div class="card-icon">📚</div>
+                    <h2>Resources & Tools</h2>
+                </div>
+                <p>Additional utilities and reference materials for Ayurvedic practice.</p>
+                <div class="sub-items">
+                    <div class="sub-item" onclick="showModal('samhita')">
+                        <strong>E-Samhita</strong>
+                        <small>Digital classical texts</small>
+                    </div>
+                    <div class="sub-item" onclick="showModal('dictionary')">
+                        <strong>Ayu Dictionary</strong>
+                        <small>Ayurvedic terminology</small>
+                    </div>
+                    <div class="sub-item" onclick="showModal('bmi')">
+                        <strong>BMI Calculator</strong>
+                        <small>Body mass index tool</small>
+                    </div>
+                    <div class="sub-item" onclick="showModal('dietary')">
+                        <strong>Dietary Guidelines</strong>
+                        <small>Nutrition recommendations</small>
+                    </div>
+                    <div class="sub-item" onclick="showModal('yoga')">
+                        <strong>Yoga Protocols</strong>
+                        <small>Therapeutic exercises</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features-grid">
+            <div class="feature-box">
+                <div class="icon">✅</div>
+                <h3>Evidence-Based</h3>
+                <p>Tools developed using classical Ayurvedic texts and modern research</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">📊</div>
+                <h3>Comprehensive Reports</h3>
+                <p>Detailed assessment reports with treatment recommendations</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">💾</div>
+                <h3>Data Export</h3>
+                <p>Export assessments as PDF, JSON, or print-ready formats</p>
+            </div>
+            <div class="feature-box">
+                <div class="icon">🔒</div>
+                <h3>Secure & Private</h3>
+                <p>Patient data handled with complete confidentiality</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Ayu360 | EVA College of Ayurved</p>
+        <p style="font-size: 0.9em; opacity: 0.8; margin-top: 5px;">
+            Developed for research and educational purposes
+        </p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showModal(type) {
+            const modalContent = {
+                prakruti: {
+                    title: '👤 Prakruti Assessment',
+                    content: 'Detailed constitutional analysis to determine the natural doshic composition and personalized health recommendations.'
+                },
+                dhatusarta: {
+                    title: '💪 Dhatu Sarta',
+                    content: 'Assessment of tissue excellence and quality indicators for optimal health and structural integrity.'
+                },
+                ashtavidha: {
+                    title: '📋 Ashtavidha Pariksha',
+                    content: 'Eight-fold examination: Nadi (pulse), Mutra (urine), Mala (stool), Jihva (tongue), Shabda (voice), Sparsha (touch), Drik (eyes), Akriti (appearance).'
+                },
+                dashavidha: {
+                    title: '📋 Dashavidha Pariksha',
+                    content: 'Ten-fold examination including Prakruti, Vikruti, Sara, Samhanana, Pramana, Satmya, Satva, Ahara Shakti, Vyayama Shakti, and Vaya.'
+                },
+                samhita: {
+                    title: '📚 E-Samhita',
+                    content: 'Digital repository of classical Ayurvedic texts including Charaka Samhita, Sushruta Samhita, and Ashtanga Hridaya.'
+                },
+                dictionary: {
+                    title: '📖 Ayu Dictionary',
+                    content: 'Comprehensive dictionary of Ayurvedic terms with Sanskrit definitions, transliterations, and meanings.'
+                },
+                bmi: {
+                    title: '⚖️ BMI Calculator',
+                    content: 'Body Mass Index calculator integrated with Ayurvedic body type assessments and health recommendations.'
+                },
+                dietary: {
+                    title: '🍽️ Dietary Guidelines',
+                    content: 'Personalized nutrition recommendations based on Prakruti, Vikruti, season, and health conditions.'
+                },
+                yoga: {
+                    title: '🧘 Yoga Protocols',
+                    content: 'Therapeutic yoga sequences and asanas specific to various health conditions and constitutional types.'
+                },
+                upcoming: {
+                    title: '🔬 Additional Disease Scales',
+                    content: 'More specialized assessment tools are currently under development. These will include scales for various conditions mentioned in Ayurvedic classics.'
+                }
+            };
+
+            const data = modalContent[type];
+            if (data) {
+                const content = `
+                    <h2>${data.title}</h2>
+                    <p style="margin: 20px 0; line-height: 1.8; color: #555;">${data.content}</p>
+                    <div style="text-align: center; margin-top: 25px;">
+                        <button class="btn secondary" onclick="closeModal()">Close</button>
+                    </div>
+                `;
+                showModalWithContent(content);
+            }
+        }
+
+        function showModalWithContent(content) {
+            document.getElementById('modalContent').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
